@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Petualangan Kata di Sipayo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:18px/1.45 system-ui,Arial,sans-serif;background:#fff0f6;color:#514452}
+#hud{position:sticky;top:0;z-index:5;background:#d982aa;color:#fff;padding:6px 10px;padding-right:100px}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.bar{height:8px;background:#ffffff55;border-radius:4px;margin-top:5px}.bar i{display:block;height:100%;background:#b7d8f1;border-radius:4px;transition:width .4s}
+#app{max-width:720px;margin:0 auto;padding:10px}
+.card{background:#fff;border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 3px 0 #0002}
+button{min-height:46px;font:inherit;font-weight:700;border:0;border-radius:12px;padding:8px 14px;background:#9fc9e8;color:#354b60;cursor:pointer;margin:3px}
+button.alt{background:#d982aa;color:#fff}button:disabled{opacity:.55}
+button.opt{font-size:19px;display:block;width:100%;text-align:left;background:#fdf3f8;border:2px solid #9fc9e8;margin:6px 0}
+.tl{display:flex;flex-wrap:wrap;gap:4px;min-height:56px;border:2px dashed #d982aa;border-radius:12px;padding:4px;margin:6px 0}
+.tile{font-size:22px;min-width:48px;background:#e8f3fc;border:2px solid #8db9df;color:#3f5870;margin:2px}
+.sign{background:#d982aa;color:#fff;font:900 34px system-ui;padding:14px;border:4px solid #b96f92;border-radius:10px;text-align:center;letter-spacing:3px;transform:rotate(-2deg);margin:12px 0}
+.bub{background:#fdf3f8;border-left:6px solid #9fc9e8;padding:8px 10px;border-radius:8px}
+.blur{filter:blur(6px);user-select:none}
+.wc{border:2px solid #d982aa;border-radius:12px;padding:8px;margin:8px 0;cursor:pointer;min-height:56px}
+.chip{display:inline-block;background:#fce8f1;border:1px solid #d982aa;border-radius:14px;padding:2px 8px;margin:2px;font-size:16px}
+#ov:empty{display:none}#ov{position:fixed;inset:0;background:#000a;z-index:9;display:flex;align-items:center;justify-content:center;padding:12px}
+.modal{background:#fff;border-radius:16px;padding:16px;max-width:520px;max-height:88vh;overflow:auto;width:100%;text-align:center}
+.modal.l{text-align:left}
+.stars{font-size:42px;animation:pop .6s}.burst{font-size:28px;animation:fall 1.6s infinite}
+.bob{animation:bob 1.2s infinite}.cert{border:8px double #91bde0;text-align:center}
+@keyframes bob{50%{transform:translateY(-6px)}}@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes fall{from{transform:translateY(-14px);opacity:1}to{transform:translateY(24px);opacity:0}}
+body.dark{background:#2b1b24;color:#f2e6ee}
+body.dark #hud{background:#824361}
+body.dark .card{background:#3b2834;border-color:#593c4f;box-shadow:0 3px 0 #0004}
+body.dark button{background:#4a6f8c;color:#e8f1f8}
+body.dark button.alt{background:#63334a;color:#f2e6ee}
+body.dark button.opt{background:#42303b;border-color:#4a6f8c;color:#f2e6ee}
+body.dark .tl{border-color:#824361}
+body.dark .tile{background:#354a5c;border-color:#4a6f8c;color:#e8f1f8}
+body.dark .sign{background:#824361;border-color:#592e42;color:#f2e6ee}
+body.dark .bub{background:#42303b;border-left-color:#4a6f8c}
+body.dark .wc{border-color:#824361;background:#3b2834}
+body.dark .chip{background:#543343;border-color:#824361;color:#f2e6ee}
+body.dark .modal{background:#3b2834;border-color:#593c4f}
+body.dark svg[viewBox="0 0 360 260"]{opacity:0.85;filter:brightness(0.85)}
+#boat-container {position: fixed;top: 45px;left: 100vw;z-index: 4;display: flex;align-items: center;gap: 8px;background: #e8f3fc;border: 2px solid #8db9df;color: #3f5870;padding: 6px 14px;border-radius: 20px;font-size: 14px;font-weight: bold;white-space: nowrap;box-shadow: 0 4px 6px #0002;pointer-events: none;animation: sail 22s linear infinite;}
+body.dark #boat-container {background: #354a5c;border-color: #4a6f8c;color: #e8f1f8;}
+@keyframes sail {0% { left: 100vw; }100% { left: -400px; }}
+@media print{#hud,button,#ov,#top-ctrl,#boat-container{display:none!important}body{background:#fff}}
+body{background:#fff0f6;color:#514452}
+#hud{background:#d982aa;color:#fff}
+.card{background:#fff;border:1px solid #f5dce8;box-shadow:0 3px 0 #d982aa22}
+button{background:#9fc9e8;color:#354b60}
+button.alt{background:#8db9df;color:#29445e}
+button.opt{background:#fdf3f8;border-color:#9fc9e8;color:#514452}
+.tl{border-color:#d982aa}
+.tile{background:#e8f3fc;border-color:#8db9df;color:#3f5870}
+.sign{background:#d982aa;border-color:#b96f92;color:#fff}
+.bub{background:#fdf3f8;border-left-color:#9fc9e8}
+.wc{border-color:#d982aa;background:#fffafd}
+.chip{background:#fce8f1;border-color:#d982aa;color:#514452}
+.modal{border:2px solid #f2d5e3;box-shadow:0 12px 40px #6e486033}
+.cert{border-color:#91bde0}
+.bar i{background:#b7d8f1}
+@media print{body{background:#fff}}
+</style></head><body>
+<div id="top-ctrl" style="position:fixed; top:6px; right:6px; z-index:999; display:flex; gap:4px;">
+    <button class="alt" style="min-height:28px; padding:2px 8px; font-size:14px; margin:0; border-radius:8px;" onclick="zoom(-2)">A-</button>
+    <button class="alt" style="min-height:28px; padding:2px 8px; font-size:14px; margin:0; border-radius:8px;" onclick="zoom(2)">A+</button>
+    <button class="alt" style="min-height:28px; padding:2px 8px; font-size:14px; margin:0; border-radius:8px;" onclick="toggleDark()" id="bdk">🌙</button>
+</div>
+<div id="boat-container" class="bob"><span style="font-size:20px;">⛵</span><span id="boat-msg">English is fun!</span></div>
+<div id="hud"></div><div id="app"></div><div id="ov"></div>
+<script>
+// =========================================================================
+// DEKLARASI GOOGLE APPS SCRIPT URL (Ganti dengan link Web App milik Anda)
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzawlA4-GaeYf5EjuwbKEVYW3E4Z4XWjrU0wsGfBzIL9BbIN-7mQX-1l6ryK2pagolrDA/exec"; 
+// =========================================================================
+
+const $=i=>document.getElementById(i),K='sipayoV1',esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const P=[
+{id:'masjid',n:'Masjid',k:'Masjid',e:'🕌',b:'🕌 Mosque Guardian',card:'pray',say:'Seorang sesepuh berkata: "Let us pray together."',
+w:[['mosque','mosk','masjid','🕌','The mosque is near the school.'],['pray','prei','salat / berdoa','🤲','Let us pray together.'],['holy','HOU-li','suci','🌙','The mosque is holy.'],['community','kuh-MYU-ni-ti','masyarakat','👥','The community helps.'],['quiet','KWAI-et','tenang','🤫','The mosque is quiet.']],s:['Let us','pray','together'],si:'Ayo kita berdoa bersama.'},
+{id:'sekolah',n:'MIS Al-Khairaat Paguat',k:'Sekolah',e:'🏫',b:'📚 School Champion',card:'book',say:'Bu Guru berkata: "Let us learn English."',
+w:[['school','skuul','sekolah','🏫','My school is big.'],['teacher','TII-cher','guru','👩‍🏫','The teacher is kind.'],['student','STYU-dent','murid','🧒','The student is smart.'],['book','buk','buku','📘','I have a book.'],['read','riid','membaca','📖','I read every day.'],['learn','lern','belajar','💡','We learn English.']],s:['The teacher','has','a book'],si:'Guru itu punya sebuah buku.'},
+{id:'desa',n:'Desa Sipayo',k:'Desa',e:'🏡',b:'🏡 Sipayo Explorer',card:'river',say:'Siti membaca papan: "Welcome to Sipayo village."',
+w:[['village','VIL-ij','desa','🏡','My village is quiet.'],['river','RIV-er','sungai','🌊','The river is near.'],['coconut','KOU-ko-nat','kelapa','🥥','The coconut is big.'],['farm','farm','kebun','🌾','The farm is green.'],['grow','grou','tumbuh','🌱','Coconuts grow here.']],s:['The river','is','near','the village'],si:'Sungai itu dekat desa.'},
+{id:'pasar',n:'Pasar Paguat',k:'Pasar',e:'🐟',b:'🛒 Market Trader',card:'fish',say:'Paman Penjual berkata: "Fresh fish for you!"',
+w:[['market','MAR-kit','pasar','🏪','The market is busy.'],['fish','fish','ikan','🐟','The fish is fresh.'],['fresh','fresh','segar','✨','I like fresh food.'],['buy','bai','membeli','💰','We buy some fish.'],['sell','sel','menjual','⚖️','They sell fish here.']],s:['We','buy','fresh fish'],si:'Kita membeli ikan segar.'}];
+const ALL=P.flatMap(p=>p.w),PL=id=>P.find(p=>p.id==id),lbl=p=>p.e+' '+p.n;
+const POS={sekolah:[60,70],masjid:[300,70],pasar:[100,200],desa:[260,200]};
+const STN=['🌟 Stimulasi','🔎 Identifikasi Masalah','📚 Pengumpulan Data','🧩 Pengolahan Data','✅ Pembuktian','🎓 Menarik Kesimpulan'];
+const HT=['Baca ceritanya, lalu tekan tombol untuk memulai petualangan.','Ketuk tiap tempat di peta untuk menemukan Kartu Misteri.','Ketuk kartu kata untuk melihat arti. Tombol 🔊 mengucapkan kata.','Ada 4 tantangan di tiap tempat. Benar 3 kali berturut-turut = poin 2x! Tombol 💡 memakai 5 XP.','Kerjakan 10 soal. Nilai minimal 50% agar bisa lanjut.','Lihat Buku Kosakatamu dan ambil sertifikat!'];
+let S=null,QZ,tm,sound=true,musicOn=true,lg=0,AC,musicTimer=null,musicStep=0;
+let isDark=false,fz=18;
+function toggleDark(){isDark=!isDark;document.body.classList.toggle('dark',isDark);$('bdk').innerText=isDark?'☀️':'🌙'}
+function zoom(d){fz=Math.max(14,Math.min(26,fz+d));document.body.style.fontSize=fz+'px'}
+function ld(){try{return JSON.parse(localStorage.getItem(K))}catch(e){return null}}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+function lb(){try{return JSON.parse(localStorage.getItem(K+'lb'))||[]}catch(e){return[]}}
+function addLb(){const l=lb();l.push({n:S.name,x:S.xp});l.sort((a,b)=>b.x-a.x);try{localStorage.setItem(K+'lb',JSON.stringify(l.slice(0,5)))}catch(e){}}
+function audio(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+function tone(f,d,ty,gain,delay){const a=audio();if(!a)return;try{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+(delay||0);o.type=ty||'sine';o.frequency.value=f;g.gain.setValueAtTime(gain||.08,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d)}catch(e){}}
+function beep(f,d,ty,t0){if(!sound)return;tone(f,d,ty,.12,t0)}
+const sOk=()=>{beep(660,.15);beep(880,.2,'sine',.12)},sNo=()=>beep(150,.3,'sawtooth'),sWin=()=>[523,659,784,1047].forEach((f,i)=>beep(f,.25,'triangle',i*.15));
+const melody=[523,659,784,659,587,698,880,698,523,659,784,1047,880,784,659,587];
+function musicTick(){if(!musicOn||!AC||AC.state!=='running')return;const f=melody[musicStep++%melody.length];tone(f,.32,'sine',.025);if(musicStep%4===0)tone(f/2,.45,'triangle',.012)}
+function startMusic(){audio();if(!musicOn||musicTimer)return;musicTick();musicTimer=setInterval(musicTick,420)}
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
+document.addEventListener('pointerdown',()=>{if(musicOn)startMusic()},{once:true});
+document.addEventListener('click',e=>{const el=e.target.closest('button,.wc,svg g,[onclick]');if(el&&sound){tone(420,.055,'sine',.045)}},{capture:true});
+function sp(w){try{const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+const tot=()=>Object.values(S.bos).reduce((a,b)=>a+b,0)+S.fin;
+function hd(){$('hud').innerHTML=S?`<div class=row><b>👤 ${esc(S.name)} (${esc(S.kelas)})</b><span>Tahap ${S.st}/6</span><span>⭐${tot()}</span><span>📖${S.words.length}</span><span>XP ${S.xp}</span></div><div class=row><small>${STN[S.st-1]}</small><span><button class=alt onclick="book()">📖 Buku</button><button class=alt onclick="help()">❓</button><button class=alt onclick="menu()">⏸</button></span></div><div class=bar><i style="width:${(S.st-1)/6*100}%"></i></div>`:''}
+function scr(h){clearInterval(tm);$('app').innerHTML=h;hd();scrollTo(0,0)}
+function md(h){$('ov').innerHTML='<div class="modal l">'+h+'</div>'}
+function cl(){$('ov').innerHTML=''}
+function setSt(n){if(S.st<n)S.st=n;save()}
+const kid=g=>`<svg class=bob width=70 height=90 viewBox="0 0 70 90"><rect x="20" y="50" width="30" height="24" rx="6" fill="#fff" stroke="#999"/><rect x="20" y="70" width="30" height="16" rx="4" fill="#d982aa"/><circle cx="35" cy="30" r="${g?20:16}" fill="${g?'#fff':'#e0a370'}" stroke="${g?'#999':'none'}"/><circle cx="35" cy="32" r="14" fill="#e0a370"/><circle cx="30" cy="31" r="2" fill="#222"/><circle cx="40" cy="31" r="2" fill="#222"/><path d="M30 38q5 4 10 0" stroke="#222" fill="none"/>${g?'':'<rect x="22" y="12" width="26" height="11" rx="3" fill="#222"/>'}</svg>`;
+function map(lab){return `<svg viewBox="0 0 360 260" style="width:100%;border-radius:16px;background:#dceefa"><circle cx="335" cy="22" r="14" fill="#b7d8f1"/><rect y="55" width="360" height="205" fill="#f3dce8"/><rect y="108" width="360" height="24" fill="#b8d7ee"/><path d="M0 240Q90 222 180 240T360 238V260H0Z" fill="#9fc9e8"/><text x="14" y="128" font-size="20">🌴</text><text x="330" y="128" font-size="20">🌴</text>`+P.map(p=>{const[x,y]=POS[p.id];return `<g onclick="pick('${p.id}')" style="cursor:pointer" class="bob"><rect x="${x-48}" y="${y-42}" width="96" height="78" rx="12" fill="#fff" opacity=".9"/><text x="${x}" y="${y}" font-size="36" text-anchor="middle">${p.e}</text><text x="${x}" y="${y+20}" font-size="12" font-weight="700" text-anchor="middle" fill="#514452">${p.k} ${lab(p)}</text></g>`}).join('')+'</svg>'}
+function pick(id){[0,0,got,place3,pick4][S.st]&&[0,0,got,place3,pick4][S.st](id)}
+function start(){S=null;const l=lb(),sv=ld();scr(`<div class=card style="text-align:center"><div onclick="if(++lg>=5){lg=0;guru()}" style="font-size:56px;display:inline-block" class="bob">🏝️</div><h1>Petualangan Kata di Sipayo</h1><div class=row style="justify-content:center">${kid(0)}${kid(1)}</div><p style="color:#d982aa; font-weight:bold; font-style:italic;">"Setiap kata baru yang kamu pelajari adalah kunci untuk membuka petualangan yang seru! 🚀"</p><p>Ayo belajar bahasa Inggris di desa kita!</p><input id=nm maxlength=20 placeholder="Nama Pemain" style="font:inherit;padding:10px;width:80%;border:2px solid #d982aa;border-radius:10px;margin-bottom:6px"><br><input id=kls maxlength=10 placeholder="Kelas (Misal: 4A)" style="font:inherit;padding:10px;width:80%;border:2px solid #d982aa;border-radius:10px"><p id=er></p><button onclick="go()">▶ Mulai Baru</button>${sv?`<button class=alt onclick="cont()">⏩ Lanjutkan (${esc(sv.name)})</button>`:''}${l.length?'<p><b>🏆 Papan Skor</b><br>'+l.map((r,i)=>`${i+1}. ${esc(r.n)} – ${r.x} XP`).join('<br>')+'</p>':''}</div>`)}
+function go(){const n=$('nm').value.trim(), k=$('kls').value.trim();if(!n || !k){$('er').innerHTML='⚠️ Tulis nama dan kelasmu dulu ya!';return}S={name:n,kelas:k,xp:0,st:1,cards:[],ex:[],words:[],bos:{},fin:0,bd:[],lbd:0};save();stage1();try{const u=new SpeechSynthesisUtterance(`Good morning, ${n}! Let's do this with me, Miss Mardawati!`);u.lang='en-US';u.pitch=1.4;u.rate=1.1;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function cont(){S=ld();[0,stage1,stage2,stage3,stage4,stage5,stage6][S.st]()}
+function stage1(){scr(`<div class=card><div class=row style="justify-content:center">${kid(0)}${kid(1)}</div><h2 style="text-align:center; color:#b96f92; margin-top:10px;">Hai, ${esc(S.name)}! 👋</h2><p>🌅 Pagi yang cerah di Desa Sipayo. Ali dan Siti berjalan menuju Pasar Paguat, dekat MIS Al-Khairaat Paguat.</p><div class="bob"><div class=sign>FRESH FISH</div></div><p class=bub>🧕 Siti: "Ali, lihat! Ada tulisan aneh di papan pasar. <b>Apa artinya tulisan ini?</b>"</p><p class=bub>👦 Ali: "Ayo kita cari tahu ke seluruh desa!"</p><button onclick="setSt(2);stage2()">🔎 Ayo Cari Tahu!</button></div>`)}
+function stage2(){S.cards=S.cards.filter(id=>['sekolah','masjid','desa','pasar'].includes(id));const n=S.cards.length;scr(`<div class=card><b>🔎 Identifikasi Masalah</b><p>Ketuk setiap tempat di peta untuk menemukan <b>Kartu Misteri</b>. (${n}/4)</p>${map(p=>S.cards.includes(p.id)?'🃏':'❓')}${n==4?'<p><button onclick="m2()">🧩 Cocokkan Kartu dengan Tempatnya</button></p>':''}</div>`)}
+function got(id){const p=PL(id),w=p.w.find(x=>x[0]==p.card);if(!S.cards.includes(id)){S.cards.push(id);S.xp+=5;sOk();save()}md(`<div style="text-align:center"><h3>🃏 Kartu Misteri</h3><p style="font-size:34px" class="bob"><b>${w[0].toUpperCase()}</b></p><p>Artinya: <span class=blur>${w[2]}</span></p><button onclick="cl();stage2()">OK</button></div>`)}
+function m2(){quiz(shuf(P).map(p=>({t:'mc',sec:'Cocokkan Kartu',q:`Kartu "${p.card}" ditemukan di mana?`,o:shuf([p,...shuf(P.filter(x=>x!=p)).slice(0,2)]).map(lbl),a:lbl(p),h:'Nama tempatnya diawali huruf '+p.k[0]})),{done:(s,pc,t,b)=>{if(s){S.xp+=15;setSt(3)}res('Kartu Terkumpul 🔎',s,pc,t,b,'','stage3()','m2()')}})}
+function stage3(){S.ex=S.ex.filter(id=>['sekolah','masjid','desa','pasar'].includes(id));const n=S.ex.length;scr(`<div class=card><b>📚 Pengumpulan Data</b><p>Masuki tiap tempat, ketuk kartu kata untuk melihat arti. (${n}/4 tempat)</p>${map(p=>S.ex.includes(p.id)?'✅':'')}${n==4?'<button onclick="setSt(4);stage4()">🧩 Lanjut: Pengolahan Data ➜</button>':''}</div>`)}
+function place3(id){const p=PL(id),all=p.w.every(w=>S.words.includes(w[0]));scr(`<div class=card><h3>${lbl(p)}</h3><p class=bub>${p.say}</p>${p.w.map((w,i)=>`<div class=wc onclick="rv('${id}',${i})"><span style="font-size:34px;display:inline-block" class="bob">${w[3]}</span> <b>${w[0]}</b> <i>/${w[1]}/</i> <button class=alt onclick="event.stopPropagation();sp('${w[0]}')">🔊</button>${S.words.includes(w[0])?`<div>➜ <b>${w[2]}</b><br><small>"${w[4]}"</small></div>`:'<div><small>Ketuk untuk melihat arti 👆</small></div>'}</div>`).join('')}${all?`<button onclick="fin3('${id}')">✅ Simpan &amp; Kembali ke Peta</button>`:'<small>Buka semua kartu untuk melanjutkan.</small>'}</div>`)}
+function rv(id,i){const w=PL(id).w[i],y=scrollY;if(!S.words.includes(w[0])){S.words.push(w[0]);S.xp+=3;sOk();save()}place3(id);scrollTo(0,y)}
+function fin3(id){if(!S.ex.includes(id)){S.ex.push(id);S.xp+=10}save();stage3()}
+function qPlace(p){const[A,,C,D]=shuf(p.w),B=shuf(p.w.filter(w=>w[0].length<=6))[0],o=(x)=>shuf([x[0],...shuf(p.w.filter(y=>y!=x)).slice(0,2).map(y=>y[0])]);let l=shuf(B[0].toUpperCase().split(''));if(l.join('')==B[0].toUpperCase())l.reverse();const sec='Tantangan '+p.k;
+return[{t:'mc',sec,q:'Lengkapi: '+A[4].replace(new RegExp(A[0],'i'),'____')+' '+A[3]+' ('+A[2]+')',o:o(A),a:A[0],h:'Artinya: '+A[2]},
+{t:'tl',sec,q:`Susun huruf menjadi kata: ${B[3]} (${B[2]})`,tiles:l,ans:B[0].toUpperCase(),sep:'',h:'Huruf pertama: '+B[0][0].toUpperCase()},
+{t:'tl',sec,q:`Susun kalimat: "${p.si}"`,tiles:shuf(p.s),ans:p.s.join(' '),sep:' ',h:'Dimulai dengan "'+p.s[0]+'"'},
+Math.random()<.5?{t:'tf',sec,q:`Benar/salah? "${C[0]}" artinya "${C[2]}"`,a:true,h:'Ikon: '+C[3]}:{t:'tf',sec,q:`Benar/salah? "${C[0]}" artinya "${D[2]}"`,a:false,h:'Ikon: '+C[3]}]}
+function stage4(){scr(`<div class=card><b>🧩 Pengolahan Data</b><p>Pilih tempat untuk memainkan 4 tantangan!</p>${map(p=>'⭐'.repeat(S.bos[p.id]||0)||'🎮')}${P.every(p=>S.bos[p.id])?'<button onclick="stage5()">🏆 Tantangan Besar ➜</button>':''}</div>`)}
+function pick4(id){const p=PL(id);quiz(qPlace(p),{done:(s,pc,t,b)=>{let ex='';if(s){S.bos[id]=Math.max(S.bos[id]||0,s);S.xp+=20;if(!S.bd.includes(p.b)){S.bd.push(p.b);ex=`<p>🏅 Lencana baru: <b>${p.b}</b></p>`}}const all=P.every(x=>S.bos[x.id]);if(all)setSt(5);save();res(lbl(p),s,pc,t,b,ex,all?'stage5()':'stage4()',`pick4('${id}')`)}})}
+function stage5(){setSt(5);scr(`<div class=card><b>✅ Pembuktian – Tantangan Besar</b><p>10 soal: Buktikan kemampuanmu!</p><button onclick="g5()">🏁 Mulai</button></div>`)}
+function g5(){const mc=(sec,q,a,o,h)=>({t:'mc',sec,q,a,o:shuf(o),h}),L=shuf(ALL).slice(0,5).map(c=>mc('Kuis Kosakata',`Apa arti "${c[0]}"? ${c[3]}`,c[2],[c[2],...shuf(ALL.filter(x=>x!=c)).slice(0,2).map(x=>x[2])],'Dibaca: '+c[1]));
+const st=(q,a,o,h)=>mc('Cerita Sipayo','Pilih kata yang tepat: "'+q+'"',a,o,h);
+L.push(st('Siti goes to the ____ with her mother.','market',['market','mosque','park'],'Tempat membeli ikan'),st('The fish is ____ and the price is cheap.','fresh',['fresh','quiet','holy'],'Artinya segar'),st('Then they ____ at the mosque.','pray',['pray','play','read'],'Artinya berdoa'));
+[['WELCOME TO SIPAYO VILLAGE','Selamat datang di Desa Sipayo',['Selamat tinggal dari Desa Sipayo','Jalan menuju Desa Sipayo']],['KEEP THE PARK CLEAN','Jagalah taman tetap bersih',['Jangan bermain di taman','Taman dibuka hari ini']]].forEach(s=>L.push(mc('Terjemahkan Papan','Papan tertulis: «'+s[0]+'». Apa artinya?',s[1],[s[1],...s[2]],'Cari kata kunci: '+s[0].split(' ')[0].toLowerCase())));
+quiz(L,{done:(s,pc,t,b)=>{if(s){S.fin=Math.max(S.fin,s);S.xp+=50;setSt(6)}res('Rapor Tantangan Besar 📝',s,pc,t,b,`<p>👤 ${esc(S.name)} · XP ${S.xp} · ⭐ ${tot()}</p>`,'stage6()','g5()')}})}
+function quiz(list,o){QZ={list,i:0,ok:0,combo:0,t0:Date.now(),o,history:[]};qs()}
+function qs(){const z=QZ;if(z.i>=z.list.length)return qe();const q=z.list[z.i];z.ans=0;z.hu=0;z.tr=0;let b='';
+if(q.t=='mc')b=q.o.map((x,k)=>`<button class=opt onclick="ans(${k})">${esc(x)}</button>`).join('');
+else if(q.t=='tf')b='<button class=opt onclick="ans(true)">✔️ Benar</button><button class=opt onclick="ans(false)">✖️ Salah</button>';
+else{z.pool=q.tiles.map(x=>({x}));z.sel=[];b='<div id=sel class=tl></div><div id=pool class=tl></div><button onclick="chk()">✔ Periksa</button>'}
+scr(`<div class=card><div class=row><small>${q.sec||''} · Soal ${z.i+1}/${z.list.length}</small><b id=tmr>⏱ 0 dtk</b></div>${z.combo>=3?'<b>🔥 Combo! Poin 2x</b>':''}<p><b>${esc(q.q)}</b></p>${b}<div id=fb></div><button class=alt onclick="hint()">💡 Petunjuk (-5 XP)</button></div>`);
+if(q.t=='tl')dt();tm=setInterval(()=>{const e=$('tmr');if(e)e.textContent='⏱ '+((Date.now()-z.t0)/1000|0)+' dtk'},500)}
+function dt(){const z=QZ;$('sel').innerHTML=z.sel.map((t,i)=>`<button class=tile onclick="un(${i})">${esc(t.x)}</button>`).join('')||'<small>Ketuk kotak di bawah…</small>';$('pool').innerHTML=z.pool.map((t,i)=>`<button class=tile onclick="pk(${i})">${esc(t.x)}</button>`).join('')}
+function pk(i){if(QZ.ans)return;QZ.sel.push(QZ.pool.splice(i,1)[0]);dt()}
+function un(i){if(QZ.ans)return;QZ.pool.push(QZ.sel.splice(i,1)[0]);dt()}
+function chk(){const z=QZ,q=z.list[z.i];if(z.ans)return;const c=z.sel.map(t=>t.x).join(q.sep)===q.ans;if(!c&&!z.tr){z.tr=1;$('fb').innerHTML='<p>🤔 Hampir! Periksa urutannya, lalu coba lagi.</p>';return}mk(c,q.ans)}
+function ans(v){const z=QZ,q=z.list[z.i];if(z.ans)return;const c=q.t=='mc'?q.o[v]===q.a:v===q.a;if(!c&&q.t=='mc'&&!z.tr){z.tr=1;document.querySelectorAll('#app .opt')[v].disabled=true;$('fb').innerHTML='<p>🤔 Belum tepat. Coba lagi, ya! Kamu pasti bisa!</p>';return}mk(c,q.t=='tf'?(q.a?'Benar':'Salah'):q.a)}
+function mk(c,t){const z=QZ,q=z.list[z.i];z.ans=1;let m;
+z.history.push(`Soal: ${q.q} | Jawab: ${c ? 'Benar' : 'Salah (Kunci: '+t+')'}`);
+if(c){const g=z.tr?5:10*(z.combo>=3?2:1);z.ok+=z.tr?.5:1;z.combo=z.tr?0:z.combo+1;S.xp+=g;sOk();m=`✅ Benar! +${g} XP`}else{z.combo=0;sNo();m=`❌ Belum tepat. Jawaban: <b>${esc(t)}</b>`}
+document.querySelectorAll('#app .opt,#app .tile').forEach(b=>b.disabled=true);$('fb').innerHTML=`<p>${m}</p><button class=alt onclick="nx()">Lanjut ➜</button>`;hd();save()}
+function nx(){QZ.i++;qs()}
+function hint(){const z=QZ,q=z.list[z.i];if(z.ans||z.hu)return;S.xp=Math.max(0,S.xp-5);z.hu=1;hd();$('fb').innerHTML='<p>💡 '+esc(q.h)+'</p>'}
+function qe(){
+    clearInterval(tm);
+    const z=QZ,n=z.list.length,pc=z.ok/n,t=(Date.now()-z.t0)/1000|0;
+    let s=pc>=.9?3:pc>=.7?2:pc>=.5?1:0,b=0;
+    if(s&&s<3&&t<n*15){s++;b=1}
+    save();
+
+    // PENGIRIMAN DATA KE GOOGLE APPS SCRIPT
+    if(GAS_URL !== "URL_GAS_ANDA_DISINI") {
+        fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Mencegah blokir CORS dari browser saat GAS me-redirect
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                nama: S.name,
+                kelas: S.kelas || "-",
+                benar: Math.floor(z.ok),
+                salah: Math.ceil(n - z.ok),
+                detail: z.history.join("\n")
+            })
+        }).catch(e => console.log('Silently ignoring fetch error:', e));
+    }
+
+    z.o.done(s,Math.round(pc*100),t,b);
+}
+function res(title,s,pc,t,b,ex,next,retry){s?sWin():sNo();save();scr(`<div class=card style="text-align:center"><div class=burst>${s?'🎉✨🎉':''}</div><h2>${title}</h2><div class=stars>${'⭐'.repeat(s)}${'☆'.repeat(3-s)}</div><p>Nilai: <b>${pc}%</b> · Waktu ${t} dtk${b?' · ⚡ Bonus cepat!':''}</p><p>${['Jangan menyerah! Ayo coba lagi, kamu pasti bisa!','Lumayan! Terus berlatih ya!','Bagus! Sedikit lagi sempurna!','Hebat sekali! Luar biasa!'][s]}</p>${ex||''}${s?`<button class=alt onclick="${next}">Lanjut ➜</button>`:''}<button onclick="${retry}">🔄 Ulangi</button></div>`)}
+function hero(){if(S.fin==3&&P.every(p=>S.bos[p.id]==3)&&!S.bd.includes('🏆 Sipayo Hero'))S.bd.push('🏆 Sipayo Hero')}
+const wh=()=>S.words.map(e=>{const w=ALL.find(x=>x[0]==e);return `<span class=chip>${w[3]} ${w[0]} = ${w[2]}</span>`}).join('')||'<small>Belum ada kata.</small>';
+function stage6(){setSt(6);hero();if(!S.lbd){S.lbd=1;addLb()}save();scr(`<div class=card><div class=row style="justify-content:center">${kid(1)}</div><p class=bub>🧕 Siti: "Sekarang aku tahu! Di sekitar kita banyak kata bahasa Inggris!"</p><b>📖 Buku Kosakata (${S.words.length} kata)</b><div>${wh()}</div><p>🏅 ${S.bd.join(' · ')||'-'}</p><p>✍️ Tuliskan 3 kata bahasa Inggris yang kamu lihat di sekitar rumahmu!</p><textarea rows=3 style="width:100%;font:inherit"></textarea><br><button onclick="cert()">🎓 Sertifikat</button><button class=alt onclick="board()">🏆 Papan Skor</button><button class=alt onclick="start()">🏠 Layar Awal</button></div>`)}
+function cert(){scr(`<div class="card cert"><h1>🎓 SERTIFIKAT</h1><p>diberikan kepada</p><h2>${esc(S.name)}</h2><p>karena telah menyelesaikan <b>Petualangan Kata di Sipayo</b><br>Bahasa Inggris Kelas IV · MIS Al-Khairaat Paguat</p><p>⭐ ${tot()} bintang · 📖 ${S.words.length} kata · XP ${S.xp}</p><p>${S.bd.join(' ')}</p><small>${new Date().toLocaleDateString('id-ID')}</small></div><button onclick="print()">🖨️ Cetak</button><button class=alt onclick="stage6()">⬅ Kembali</button>`)}
+function book(){md(`<h3>📖 Buku Kosakata (${S.words.length}/${ALL.length})</h3>${wh()}<p style="text-align:center"><button onclick="cl()">Tutup</button></p>`)}
+function help(){md(`<h3>❓ Bantuan</h3><p>${HT[S.st-1]}</p><p style="text-align:center"><button onclick="cl()">Mengerti</button></p>`)}
+function board(){const l=lb();md(`<h3>🏆 Papan Skor</h3>${l.length?l.map((r,i)=>`${i+1}. ${esc(r.n)} – ${r.x} XP`).join('<br>'):'Belum ada skor.'}<p style="text-align:center"><button onclick="cl()">Tutup</button></p>`)}
+function menu(){md(`<h3 style="text-align:center">⏸ Menu</h3><p style="text-align:center"><button onclick="cl()">▶ Lanjut</button><button class=alt onclick="sound=!sound;menu()">${sound?'🔊 Efek: On':'🔇 Efek: Off'}</button><button class=alt onclick="musicOn=!musicOn;if(musicOn){startMusic()}else{stopMusic()}menu()">${musicOn?'🎵 Musik: On':'🎵 Musik: Off'}</button><button class=alt onclick="cl();start()">🏠 Layar Awal</button></p>`)}
+function guru(){md(`<h3>📋 Petunjuk Guru</h3><p>Data hasil kuis siswa kini otomatis tersimpan di Google Sheets yang terhubung melalui Google Apps Script.</p><p style="text-align:center"><button onclick="cl()">Tutup</button></p>`)}
+const boatMsgs = ["Keep up the good work!", "English is fun!", "You are doing great!", "Let's learn new words!", "Have a nice day!"];
+const bMsgEl = $('boat-msg');
+if(bMsgEl){$('boat-container').addEventListener('animationiteration', () => {bMsgEl.innerText = boatMsgs[Math.floor(Math.random() * boatMsgs.length)];});}
+start();
+</script></body></html>
